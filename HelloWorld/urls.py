@@ -24,4 +24,6 @@ urlpatterns = [
     path('list/', testdb.getAll),
     path('add/', testdb.add),
     path('find/', testdb.find),
+    path('update/', testdb.update),  # 更新
+    path('delete/', testdb.delete),  # 删除
 ]

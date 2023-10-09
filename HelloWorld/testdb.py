@@ -19,10 +19,16 @@ def testdb(request):
 
 
 def add(request):
-    for i in range(1, 101):
-        test1 = Test(name='zhangsan'+str(i))  # 修改这里，将整数转换为字符串
-        test1.save()
-    data = Test.objects.count()  # 使用count()方法获取添加的记录数
+    # for i in range(1, 101):
+    #     test1 = Test(name='zhangsan'+str(i))  # 修改这里，将整数转换为字符串
+    #     test1.save()
+    # data = Test.objects.count()  # 使用count()方法获取添加的记录数
+
+    # 使用 bulk_create() 方法可以提高性能，因为它减少了与数据库的交互次数。这对于批量创建大量对象时非常有用。
+    objects_to_create = [Test(name=f'zhangsan{i}') for i in range(1, 101)]
+    Test.objects.bulk_create(objects_to_create)
+
+    data = len(objects_to_create)
 
     return JsonResponse({
         'data': data,
@@ -40,7 +46,6 @@ def getAll(request):
     }, safe=False)
 
 
-@require_GET
 def find(request):
     if request.method == 'GET':
         name = request.GET.get('name')  # 获取GET请求中的name参数
@@ -63,3 +68,36 @@ def find(request):
         }
 
     return JsonResponse(response_data)
+
+# 更新
+
+
+def update(request):
+    id = request.GET.get('id')
+    name = request.GET.get('name')
+
+    data = Test.objects.get(id=id)
+    data.name = name
+    data.save()
+    return JsonResponse({
+        'data': list(Test.objects.filter(id=id).values()),
+        'success': True,
+    }, safe=False)
+
+
+# 删除
+def delete(request):
+    id = request.GET.get('id')
+    data = Test.objects.filter(id=id)
+    res = {}
+    if data:
+        data.delete()
+        res = {
+            'success': True,
+            'msg': '删除成功',
+        }
+    else:
+        res = {
+            'msg': '数据不存在',
+        }
+    return JsonResponse(res, )
