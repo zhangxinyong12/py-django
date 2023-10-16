@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include  # include()函数用于引入其他URLconf
 from . import views, testdb
 
 urlpatterns = [
@@ -26,4 +26,5 @@ urlpatterns = [
     path('find/', testdb.find),
     path('update/', testdb.update),  # 更新
     path('delete/', testdb.delete),  # 删除
+    path('user/', include("UserModel.urls")),
 ]
