@@ -27,4 +27,5 @@ urlpatterns = [
     path('update/', testdb.update),  # 更新
     path('delete/', testdb.delete),  # 删除
     path('user/', include("UserModel.urls")),
+    path('books/', include("Library.urls")),
 ]
