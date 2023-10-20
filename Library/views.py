@@ -97,8 +97,28 @@ def getList(request):
     # 查询所有书籍 包含出版社信息 和 作者信息
     bookList = Book.objects.filter(title='西游记').all()
     dataLen = len(bookList)
+    result = []
+    for book in bookList:
+        authors = []
+        for i in book.authors.all():
+            author_dict = {
+                'name': i.name,
+                'age': i.age,
+                'email': i.email,
+                'au_detail': model_to_dict(i.au_detail)
+            }
+            authors.append(author_dict)
+        book_dict = {
+            'id': book.id,
+            'title': book.title,
+            'price': book.price,
+            'pub_date': book.pub_date,
+            'publish': model_to_dict(book.publish),
+            'authors': authors
+        }
+        result.append(book_dict)
     return JsonResponse({
-        'data': list(bookList.values()),
+        'data': result,
         'length': dataLen,
         'success': True,
     }, safe=False)
